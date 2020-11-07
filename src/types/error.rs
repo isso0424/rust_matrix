@@ -1,9 +1,10 @@
+#![allow(dead_code)]
 use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum MatrixError {
     #[error("invalid row_matrix length. expected: {expected:?} found: {found:?}")]
-    InvalidLength { expected: u32, found: u32 },
+    InvalidLength { expected: usize, found: usize },
     #[error("cannot calculate {x_row:?} X {x_column:?} and {y_row:?} X {y_column:?}")]
     CannotCalculate {
         x_row: u32,
