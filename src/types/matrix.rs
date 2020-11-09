@@ -113,6 +113,19 @@ where
 
         Ok(Matrix { matrix })
     }
+
+    fn check_regular(&self) -> Result<bool, MatrixError> {
+        if self.get_row() != 2 || self.get_column() != 2 {
+            Err(MatrixError::NonSupportedMatrixShape {
+                row: self.get_row(),
+                column: self.get_column(),
+            })
+        } else {
+            Ok(self.get_value(1, 1) * self.get_value(2, 2)
+                - self.get_value(1, 2) * self.get_value(2, 1)
+                != T::zero())
+        }
+    }
 }
 
 #[cfg(test)]
@@ -211,5 +224,22 @@ mod tests {
         assert_eq!(unit.get_value(1, 2), sample.get_value(1, 2));
         assert_eq!(unit.get_value(2, 1), sample.get_value(2, 1));
         assert_eq!(unit.get_value(2, 2), sample.get_value(2, 2));
+    }
+
+    #[test]
+    fn check_regular() {
+        let regular_matrix = Matrix::create(2, 2, vec![1, 2, 3, 1]).unwrap();
+        let non_regular_matrix = Matrix::create(2, 2, vec![1, 2, 3, 6]).unwrap();
+        assert_eq!(regular_matrix.check_regular().unwrap(), true);
+        assert_eq!(non_regular_matrix.check_regular().unwrap(), false);
+    }
+
+    #[test]
+    fn failed_check_regular() {
+        let invalid_shape_matrix = Matrix::create(1, 1, vec![1]).unwrap();
+        assert_eq!(
+            invalid_shape_matrix.check_regular().err().unwrap(),
+            MatrixError::NonSupportedMatrixShape { row: 1, column: 1 }
+        )
     }
 }

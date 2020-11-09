@@ -12,6 +12,8 @@ pub enum MatrixError {
         y_row: usize,
         y_column: usize,
     },
+    #[error("non-supported matrix shape in this function. {row:?} X {column:?}")]
+    NonSupportedMatrixShape { row: usize, column: usize },
 }
 
 #[cfg(test)]
