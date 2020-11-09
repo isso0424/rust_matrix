@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Error, Debug, PartialEq)]
 pub enum MatrixError {
     #[error("invalid row_matrix length. expected: {expected:?} found: {found:?}")]
     InvalidLength { expected: usize, found: usize },

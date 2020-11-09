@@ -1,7 +1,8 @@
 #![allow(dead_code)]
-use super::error::MatrixError;
+use crate::types::error::MatrixError;
 use std::vec::Vec;
 
+#[derive(Debug, PartialEq)]
 pub struct Matrix {
     matrix: Vec<Vec<f32>>,
 }
@@ -62,6 +63,37 @@ impl Matrix {
 
         Ok(Matrix { matrix })
     }
+
+    fn cross(&self, y: &Self) -> Result<Self, MatrixError> {
+        let row = self.get_row();
+        let column = y.get_column();
+
+        if self.get_column() != y.get_row() {
+            return Err(MatrixError::CannotCalculate {
+                x_row: self.get_row(),
+                x_column: self.get_column(),
+                y_row: y.get_row(),
+                y_column: y.get_column(),
+            });
+        }
+
+        let z = self.get_column();
+
+        let mut matrix = vec![];
+
+        for m in 1..row + 1 {
+            matrix.push(vec![]);
+            for n in 1..column + 1 {
+                let mut ans = 0.0;
+                for l in 1..z + 1 {
+                    ans += self.get_value(m, l) * y.get_value(l, n);
+                }
+                matrix[m - 1].push(ans);
+            }
+        }
+
+        Ok(Matrix { matrix })
+    }
 }
 
 #[cfg(test)]
@@ -104,5 +136,34 @@ mod tests {
         assert_eq!(new_matrix.get_value(2, 1), 9.0);
         assert_eq!(new_matrix.get_value(2, 2), 11.0);
         assert_eq!(new_matrix.get_value(2, 3), 13.0);
+    }
+
+    #[test]
+    fn cross_two_matrix() {
+        let x_matrix = Matrix::create(2, 2, vec![1.0, 2.0, 3.0, 4.0]).unwrap();
+        let y_matrix = Matrix::create(2, 3, vec![2.0, 3.0, 4.0, 5.0, 6.0, 7.0]).unwrap();
+        let new_matrix = x_matrix.cross(&y_matrix).unwrap();
+        assert_eq!(new_matrix.get_value(1, 1), 12.0);
+        assert_eq!(new_matrix.get_value(1, 2), 15.0);
+        assert_eq!(new_matrix.get_value(1, 3), 18.0);
+        assert_eq!(new_matrix.get_value(2, 1), 26.0);
+        assert_eq!(new_matrix.get_value(2, 2), 33.0);
+        assert_eq!(new_matrix.get_value(2, 3), 40.0);
+    }
+
+    #[test]
+    fn failed_calculate_cross() {
+        let x_matrix = Matrix::create(2, 3, vec![2.0, 3.0, 4.0, 5.0, 6.0, 7.0]).unwrap();
+        let y_matrix = Matrix::create(2, 3, vec![2.0, 3.0, 4.0, 5.0, 6.0, 7.0]).unwrap();
+        let error = x_matrix.cross(&y_matrix);
+        assert_eq!(
+            MatrixError::CannotCalculate {
+                x_row: 2,
+                x_column: 3,
+                y_row: 2,
+                y_column: 3
+            },
+            error.err().unwrap()
+        );
     }
 }
