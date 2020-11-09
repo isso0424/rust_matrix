@@ -28,6 +28,18 @@ impl Matrix {
         Ok(Matrix { matrix })
     }
 
+    fn create_unit_matrix(n: usize) -> Self {
+        let mut matrix = vec![];
+        for m in 0..n {
+            matrix.push(vec![]);
+            for l in 0..n {
+                matrix[m].push(if m == l { 1.0 } else { 0.0 });
+            }
+        }
+
+        Matrix { matrix }
+    }
+
     fn get_row(&self) -> usize {
         self.matrix.len()
     }
@@ -182,5 +194,15 @@ mod tests {
             },
             error.err().unwrap()
         );
+    }
+
+    #[test]
+    fn create_unit_matrix() {
+        let unit = Matrix::create_unit_matrix(2);
+        let sample = Matrix::create(2, 2, vec![1.0, 0.0, 0.0, 1.0]).unwrap();
+        assert_eq!(unit.get_value(1, 1), sample.get_value(1, 1));
+        assert_eq!(unit.get_value(1, 2), sample.get_value(1, 2));
+        assert_eq!(unit.get_value(2, 1), sample.get_value(2, 1));
+        assert_eq!(unit.get_value(2, 2), sample.get_value(2, 2));
     }
 }
