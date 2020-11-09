@@ -14,6 +14,8 @@ pub enum MatrixError {
     },
     #[error("non-supported matrix shape in this function. {row:?} X {column:?}")]
     NonSupportedMatrixShape { row: usize, column: usize },
+    #[error("determinant is zero.")]
+    ZeroDeterminant,
 }
 
 #[cfg(test)]

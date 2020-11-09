@@ -3,6 +3,7 @@ where
     Self: std::ops::Add<Output = Self>
         + std::ops::Mul<Output = Self>
         + std::ops::Sub<Output = Self>
+        + std::ops::Div<Output = Self>
         + std::cmp::PartialEq
         + std::marker::Sized
         + std::marker::Copy,
@@ -10,6 +11,8 @@ where
     fn zero() -> Self;
 
     fn one() -> Self;
+
+    fn minus_one() -> Self;
 }
 
 impl MatrixNumber for f32 {
@@ -19,6 +22,10 @@ impl MatrixNumber for f32 {
 
     fn one() -> Self {
         1.0
+    }
+
+    fn minus_one() -> Self {
+        -1.0
     }
 }
 
@@ -30,6 +37,10 @@ impl MatrixNumber for f64 {
     fn one() -> Self {
         1.0
     }
+
+    fn minus_one() -> Self {
+        -1.0
+    }
 }
 
 impl MatrixNumber for i8 {
@@ -39,6 +50,10 @@ impl MatrixNumber for i8 {
 
     fn one() -> Self {
         1
+    }
+
+    fn minus_one() -> Self {
+        -1
     }
 }
 
@@ -50,6 +65,10 @@ impl MatrixNumber for i16 {
     fn one() -> Self {
         1
     }
+
+    fn minus_one() -> Self {
+        -1
+    }
 }
 
 impl MatrixNumber for i32 {
@@ -59,6 +78,10 @@ impl MatrixNumber for i32 {
 
     fn one() -> Self {
         1
+    }
+
+    fn minus_one() -> Self {
+        -1
     }
 }
 
@@ -70,6 +93,10 @@ impl MatrixNumber for i64 {
     fn one() -> Self {
         1
     }
+
+    fn minus_one() -> Self {
+        -1
+    }
 }
 
 impl MatrixNumber for i128 {
@@ -80,54 +107,8 @@ impl MatrixNumber for i128 {
     fn one() -> Self {
         1
     }
-}
 
-impl MatrixNumber for u8 {
-    fn zero() -> Self {
-        0
-    }
-
-    fn one() -> Self {
-        1
-    }
-}
-
-impl MatrixNumber for u16 {
-    fn zero() -> Self {
-        0
-    }
-
-    fn one() -> Self {
-        1
-    }
-}
-
-impl MatrixNumber for u32 {
-    fn zero() -> Self {
-        0
-    }
-
-    fn one() -> Self {
-        1
-    }
-}
-
-impl MatrixNumber for u64 {
-    fn zero() -> Self {
-        0
-    }
-
-    fn one() -> Self {
-        1
-    }
-}
-
-impl MatrixNumber for u128 {
-    fn zero() -> Self {
-        0
-    }
-
-    fn one() -> Self {
-        1
+    fn minus_one() -> Self {
+        -1
     }
 }

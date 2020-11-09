@@ -126,6 +126,31 @@ where
                 != T::zero())
         }
     }
+
+    fn inverse_matrix(&self) -> Result<Self, MatrixError> {
+        match self.check_regular() {
+            Ok(status) => {
+                if !status {
+                    Err(MatrixError::ZeroDeterminant {})
+                } else {
+                    let determinant = self.get_value(1, 1) * self.get_value(2, 2)
+                        - self.get_value(1, 2) * self.get_value(2, 1);
+                    let new_matrix = vec![
+                        vec![
+                            self.get_value(2, 2) / determinant,
+                            self.get_value(2, 1) / determinant * T::minus_one(),
+                        ],
+                        vec![
+                            self.get_value(1, 2) / determinant * T::minus_one(),
+                            self.get_value(1, 1) / determinant,
+                        ],
+                    ];
+                    Ok(Self { matrix: new_matrix })
+                }
+            }
+            Err(err) => Err(err),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -240,6 +265,29 @@ mod tests {
         assert_eq!(
             invalid_shape_matrix.check_regular().err().unwrap(),
             MatrixError::NonSupportedMatrixShape { row: 1, column: 1 }
-        )
+        );
+    }
+
+    #[test]
+    fn inverse_matrix() {
+        let matrix = Matrix::create(2, 2, vec![9, 2, 4, 1]).unwrap();
+        let inverse = matrix.inverse_matrix().unwrap();
+        assert_eq!(inverse.get_value(1, 1), 1);
+        assert_eq!(inverse.get_value(1, 2), -4);
+        assert_eq!(inverse.get_value(2, 1), -2);
+        assert_eq!(inverse.get_value(2, 2), 9);
+    }
+
+    #[test]
+    fn failed_calculate_inverse() {
+        let matrix = Matrix::create(2, 2, vec![1, 2, 3, 6]).unwrap();
+        let error = matrix.inverse_matrix().err().unwrap();
+        assert_eq!(MatrixError::ZeroDeterminant, error);
+
+        let matrix = Matrix::create(1, 2, vec![1, 1]).unwrap();
+        assert_eq!(
+            matrix.inverse_matrix().err().unwrap(),
+            MatrixError::NonSupportedMatrixShape { row: 1, column: 2 }
+        );
     }
 }
