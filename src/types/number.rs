@@ -1,6 +1,9 @@
 pub trait MatrixNumber
 where
-    Self: std::ops::Add + std::ops::Mul + std::marker::Sized,
+    Self: std::ops::Add<Output = Self>
+        + std::ops::Mul<Output = Self>
+        + std::marker::Sized
+        + std::marker::Copy,
 {
     fn zero() -> Self;
 

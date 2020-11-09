@@ -1,14 +1,21 @@
 #![allow(dead_code)]
 use crate::types::error::MatrixError;
+use crate::types::number::MatrixNumber;
 use std::vec::Vec;
 
 #[derive(Debug, PartialEq)]
-pub struct Matrix {
-    matrix: Vec<Vec<f32>>,
+pub struct Matrix<T>
+where
+    T: MatrixNumber,
+{
+    matrix: Vec<Vec<T>>,
 }
 
-impl Matrix {
-    fn create(row: usize, column: usize, row_matrix: Vec<f32>) -> Result<Self, MatrixError> {
+impl<T> Matrix<T>
+where
+    T: MatrixNumber,
+{
+    fn create(row: usize, column: usize, row_matrix: Vec<T>) -> Result<Self, MatrixError> {
         let length = row * column;
         if length != row_matrix.len() {
             return Err(MatrixError::InvalidLength {
@@ -33,7 +40,7 @@ impl Matrix {
         for m in 0..n {
             matrix.push(vec![]);
             for l in 0..n {
-                matrix[m].push(if m == l { 1.0 } else { 0.0 });
+                matrix[m].push(if m == l { T::one() } else { T::zero() });
             }
         }
 
@@ -48,7 +55,7 @@ impl Matrix {
         self.matrix[0].len()
     }
 
-    fn get_value(&self, row: usize, column: usize) -> f32 {
+    fn get_value(&self, row: usize, column: usize) -> T {
         self.matrix[row - 1][column - 1]
     }
 
@@ -96,9 +103,9 @@ impl Matrix {
         for m in 1..row + 1 {
             matrix.push(vec![]);
             for n in 1..column + 1 {
-                let mut ans = 0.0;
+                let mut ans = T::zero();
                 for l in 1..z + 1 {
-                    ans += self.get_value(m, l) * y.get_value(l, n);
+                    ans = ans + self.get_value(m, l) * y.get_value(l, n);
                 }
                 matrix[m - 1].push(ans);
             }
@@ -122,7 +129,7 @@ mod tests {
 
     #[test]
     fn invalid_length() {
-        let err = match Matrix::create(1, 1, vec![]) {
+        let err = match Matrix::create(1, 1, vec![2, 3]) {
             Ok(_) => panic!("wtf"),
             Err(err) => err,
         };
@@ -130,7 +137,7 @@ mod tests {
             "{}",
             MatrixError::InvalidLength {
                 expected: 1,
-                found: 0,
+                found: 2,
             }
         );
         assert_eq!(message, format!("{}", err));
@@ -198,7 +205,7 @@ mod tests {
 
     #[test]
     fn create_unit_matrix() {
-        let unit = Matrix::create_unit_matrix(2);
+        let unit: Matrix<f32> = Matrix::create_unit_matrix(2);
         let sample = Matrix::create(2, 2, vec![1.0, 0.0, 0.0, 1.0]).unwrap();
         assert_eq!(unit.get_value(1, 1), sample.get_value(1, 1));
         assert_eq!(unit.get_value(1, 2), sample.get_value(1, 2));
