@@ -139,6 +139,23 @@ mod tests {
     }
 
     #[test]
+    fn failed_calculate_add() {
+        let x_matrix = Matrix::create(2, 2, vec![1.0, 2.0, 3.0, 4.0]).unwrap();
+        let y_matrix = Matrix::create(2, 3, vec![2.0, 3.0, 4.0, 5.0, 6.0, 7.0]).unwrap();
+        let error = x_matrix.add(&y_matrix).err().unwrap();
+
+        assert_eq!(
+            MatrixError::CannotCalculate {
+                x_row: 2,
+                x_column: 2,
+                y_row: 2,
+                y_column: 3
+            },
+            error
+        );
+    }
+
+    #[test]
     fn cross_two_matrix() {
         let x_matrix = Matrix::create(2, 2, vec![1.0, 2.0, 3.0, 4.0]).unwrap();
         let y_matrix = Matrix::create(2, 3, vec![2.0, 3.0, 4.0, 5.0, 6.0, 7.0]).unwrap();
