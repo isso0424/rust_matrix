@@ -7,10 +7,10 @@ pub enum MatrixError {
     InvalidLength { expected: usize, found: usize },
     #[error("cannot calculate {x_row:?} X {x_column:?} and {y_row:?} X {y_column:?}")]
     CannotCalculate {
-        x_row: u32,
-        x_column: u32,
-        y_row: u32,
-        y_column: u32,
+        x_row: usize,
+        x_column: usize,
+        y_row: usize,
+        y_column: usize,
     },
 }
 
