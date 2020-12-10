@@ -138,10 +138,10 @@ where
                     let new_matrix = vec![
                         vec![
                             self.get_value(2, 2) / determinant,
-                            self.get_value(2, 1) / determinant * T::minus_one(),
+                            self.get_value(2, 1) / determinant * -T::one(),
                         ],
                         vec![
-                            self.get_value(1, 2) / determinant * T::minus_one(),
+                            self.get_value(1, 2) / determinant * -T::one(),
                             self.get_value(1, 1) / determinant,
                         ],
                     ];
